@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlorestMC • ЭПИЧНЫЙ СЕРВЕР</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Montserrat:wght@600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon: #00ffff;
+            --space: #0a0a23;
+            --star: #fff;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            background: var(--space);
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+        /* ПАДАЮЩИЕ ЗВЁЗДЫ */
+        .stars {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .star {
+            position: absolute;
+            background: var(--star);
+            width: 2px; height: 2px;
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--neon);
+            animation: fall linear infinite;
+        }
+        @keyframes fall {
+            0% { transform: translateY(-100vh); opacity: 0; }
+            10% { opacity: 1; }
+            100% { transform: translateY(100vh); opacity: 0; }
+        }
+        /* КОНТЕНТ */
+        .container {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 40px 20px;
+        }
+        /* АВАТАРКА СЕРВЕРА */
+        .logo {
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 40px auto;
+            border: 8px solid var(--neon);
+            box-shadow: 
+                0 0 40px var(--neon),
+                0 0 80px var(--neon),
+                inset 0 0 40px rgba(0,255,255,0.3);
+            animation: pulse 4s infinite;
+            transition: 0.5s;
+        }
+        .logo:hover { transform: scale(1.05); }
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 40px var(--neon); }
+            50% { box-shadow: 0 0 80px var(--neon), 0 0 120px var(--neon); }
+        }
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 5rem;
+            text-shadow: 0 0 30px var(--neon);
+            margin: 20px 0;
+            letter-spacing: 4px;
+        }
+        .tagline {
+            font-size: 1.8rem;
+            margin: 15px 0 50px;
+            opacity: 0.9;
+            text-shadow: 0 0 15px var(--neon);
+        }
+        /* КНОПКИ-ПЛАНЕТЫ */
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin: 60px 0;
+            perspective: 1000px;
+        }
+        .planet {
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: black;
+            font-weight: 900;
+            font-size: 1.6rem;
+            text-shadow: 0 0 10px white;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            transform-style: preserve-3d;
+        }
+        .planet::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.4), transparent);
+            opacity: 0;
+            transition: 0.4s;
+        }
+        .planet:hover {
+            transform: translateY(-15px) rotateY(10deg);
+            box-shadow: 0 30px 60px rgba(0,255,255,0.5);
+        }
+        .planet:hover::before { opacity: 1; }
+        .planet span {
+            position: relative;
+            z-index: 2;
+        }
+        /* ЦВЕТА ПЛАНЕТ */
+        .connect { background: linear-gradient(135deg, #00ff88, #00d4ff); }
+        .map     { background: linear-gradient(135deg, #ff6b6b, #feca57); }
+        .tg      { background: linear-gradient(135deg, #229ed9, #40c4ff); }
+        .ip      { background: linear-gradient(135deg, #2d3436, #636e72); color: var(--neon); }
+
+        /* IP БЛОК */
+        .ip-block {
+            margin: 60px auto;
+            max-width: 500px;
+            background: rgba(0,0,0,0.5);
+            padding: 25px;
+            border-radius: 20px;
+            border: 2px solid var(--neon);
+            box-shadow: 0 0 30px rgba(0,255,255,0.3);
+        }
+        .ip-text {
+            font-family: monospace;
+            font-size: 1.8rem;
+            padding: 15px;
+            background: black;
+            border-radius: 12px;
+            cursor: pointer;
+            user-select: all;
+            transition: 0.3s;
+        }
+        .ip-text:hover {
+            background: #111;
+            box-shadow: 0 0 20px var(--neon);
+        }
+        .copied {
+            position: absolute;
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--neon);
+            color: black;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            opacity: 0;
+            transition: 0.4s;
+        }
+
+        footer {
+            margin-top: 80px;
+            padding: 30px;
+            font-size: 1rem;
+            opacity: 0.7;
+        }
+        @media (max-width: 768px) {
+            h1 { font-size: 3rem; }
+            .logo { width: 200px; height: 200px; }
+            .planet { width: 160px; height: 160px; font-size: 1.2rem; }
+            .tagline { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ПАДАЮЩИЕ ЗВЁЗДЫ -->
+    <div class="stars" id="stars"></div>
+
+    <div class="container">
+
+        <!-- АВАТАРКА СЕРВЕРА -->
+        <img src="https://a.imgfoto.host/2025/11/07/1000017962.md.jpeg" class="logo" id="serverLogo" alt="FlorestMC">
+        <div style="margin:10px 0; font-size:0.9rem; opacity:0.7;">
+        </div>
+
+        <h1>FLORESTMC</h1>
+        <p class="tagline">Выживание • Страны • Экономика • Java + Bedrock</p>
+
+        <!-- КНОПКИ-ПЛАНЕТЫ -->
+        <div class="buttons">
+            <a href="minecraft://?addExternalServer=FlorestMC|java.florestmc.ru:20078" class="planet connect">
+                <span>ИГРАТЬ<br>Java</span>
+            </a>
+            <a href="#" onclick="alert('Bedrock:\nIP: bedrock.florestmc.ru\nПорт: 20324')" class="planet connect">
+                <span>ИГРАТЬ<br>Bedrock</span>
+            </a>
+            <a href="http://map.florestmc.ru" target="_blank" class="planet map">
+                <span>ЖИВАЯ<br>КАРТА</span>
+            </a>
+            <a href="https://t.me/fmc_server" target="_blank" class="planet tg">
+                <span>TELEGRAM<br>ЧАТ</span>
+            </a>
+        </div>
+
+        <!-- IP ДЛЯ КОПИРОВАНИЯ -->
+        <div class="ip-block">
+            <div class="ip-text" onclick="copyIP('java.florestmc.ru')">
+                java.florestmc.ru
+                <div class="copied">СКОПИРОВАНО!</div>
+            </div>
+            <small style="display:block; margin-top:10px; opacity:0.8;">
+                Bedrock: <code>bedrock.florestmc.ru:20324</code><br>
+                Не заходит? → <code>play.florestmc.ru</code>
+            </small>
+        </div>
+
+        <footer>
+            © 2025 FlorestMC • Все права защищены<br>
+            <a href="https://t.me/florestchatminecraft" style="color:var(--neon); text-decoration:none;">
+                @florestchatminecraft — чат-ретранслятор
+            </a>
+        </footer>
+    </div>
+
+    <script>
+        // Падающие звёзды
+        const starsContainer = document.getElementById('stars');
+        for(let i = 0; i < 80; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 8 + 's';
+            star.style.animationDuration = Math.random() * 4 + 3 + 's';
+            starsContainer.appendChild(star);
+        }
+
+        // Копирование IP
+        function copyIP(text) {
+            navigator.clipboard.writeText(text);
+            const notif = event.target.querySelector('.copied');
+            notif.style.opacity = 1;
+            notif.style.top = '-60px';
+            setTimeout(() => {
+                notif.style.opacity = 0;
+                notif.style.top = '-50px';
+            }, 1500);
+        }
+
+        // Подсказка для аватарки
+        document.getElementById('serverLogo').addEventListener('error', function() {
+            this.src = 'https://i.imgur.com/8k0Y5gP.jpg'; // резервная
+        });
+    </script>
+</body>
+</html>
