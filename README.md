@@ -1,2 +1,0 @@
-# FlorestMC
-florestmc.ru
